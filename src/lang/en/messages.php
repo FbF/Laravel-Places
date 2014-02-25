@@ -8,8 +8,13 @@ return array(
 	),
 
 	'details' => array(
-		'share_label' => 'Share',
 		'all_link_text' => 'All places',
+	),
+
+	'share' => array(
+		'facebook' => 'Share on Facebook',
+		'twitter' => 'Share on Twitter',
+		'label' => 'Share',
 	),
 
 );

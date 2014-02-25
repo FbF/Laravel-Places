@@ -222,6 +222,10 @@ class Place extends \Eloquent {
 		return $this->marker_latitude != 0 && $this->marker_longitude != 0;
 	}
 
+	/**
+	 * Returns the published date formatted according to the config setting
+	 * @return string
+	 */
 	public function getDate()
 	{
 		return date(\Config::get('laravel-places::views.published_date_format'), strtotime($this->published_date));

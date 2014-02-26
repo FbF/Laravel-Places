@@ -141,6 +141,10 @@ return array(
 					return Config::get('laravel-places::map.marker_title');
 				},
 		),
+		'is_sticky' => array(
+			'title' => 'Is sticky?',
+			'type' => 'bool',
+		),
 		'slug' => array(
 			'title' => 'Slug',
 			'type' => 'text',

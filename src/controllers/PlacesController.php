@@ -12,6 +12,7 @@ class PlacesController extends \BaseController {
 	public function index()
 	{
 		$places = $this->place->live()
+			->orderBy('is_sticky', 'desc')
 			->orderBy('published_date', 'desc')
 			->paginate(\Config::get('laravel-places::views.index_page.results_per_page'));
 

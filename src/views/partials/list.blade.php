@@ -4,7 +4,7 @@
 
 		@foreach ($places as $place)
 
-			<div class="item">
+			<div class="item{{ $post->is_sticky ? ' item__sticky' : '' }}">
 
 				<h2 class="item--title">
 					<a href="{{ $place->getUrl() }}" title="{{ $place->title }}">

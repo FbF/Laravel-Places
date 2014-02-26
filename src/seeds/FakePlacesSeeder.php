@@ -38,6 +38,7 @@ class FakePlacesSeeder extends \Seeder {
 		$this->setContent();
 		$this->setLink();
 		$this->setMap();
+		$this->setIsSticky();
 		$this->setPageTitle();
 		$this->setMetaDescription();
 		$this->setMetaKeywords();
@@ -244,6 +245,11 @@ class FakePlacesSeeder extends \Seeder {
 	protected function setMarkerTitle()
 	{
 		$this->place->marker_title = $this->faker->words(rand(1, 6), true);
+	}
+
+	protected function setIsSticky()
+	{
+		$this->post->is_sticky = (bool) rand(0, 1);
 	}
 
 	protected function setInRss()

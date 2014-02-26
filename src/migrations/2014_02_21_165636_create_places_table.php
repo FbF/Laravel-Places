@@ -29,6 +29,7 @@ class CreatePlacesTable extends Migration {
 			$table->float('marker_latitude', 15, 8)->nullable()->default(0);
 			$table->float('marker_longitude', 15, 8)->nullable()->default(0);
 			$table->string('marker_title')->nullable();
+			$table->boolean('is_sticky');
 			$table->string('slug')->unique();
 			$table->string('page_title')->nullable();
 			$table->text('meta_description')->nullable();

@@ -23,5 +23,5 @@
 			title: '{{ addslashes($place->marker_title) }}'
 		});
 	}
-	google.maps.place.addDomListener(window, 'load', initialize);
+	google.maps.event.addDomListener(window, 'load', initialize);
 </script>

@@ -249,7 +249,7 @@ class FakePlacesSeeder extends \Seeder {
 
 	protected function setIsSticky()
 	{
-		$this->post->is_sticky = (bool) rand(0, 1);
+		$this->place->is_sticky = (bool) rand(0, 1);
 	}
 
 	protected function setInRss()

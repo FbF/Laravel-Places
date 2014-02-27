@@ -26,10 +26,29 @@ class Place extends \Eloquent {
 		'include_trashed' => true,
 	);
 
+	/**
+	 * Query scope for "live" places, adds conditions for status = APPROVED and published date is in the past
+	 *
+	 * @param $query
+	 * @return mixed
+	 */
 	public function scopeLive($query)
 	{
 		return $query->where('status', '=', self::APPROVED)
 			->where('published_date', '<=', \Carbon\Carbon::now());
+	}
+
+	/**
+	 * To filter items by a relationship, you should extend this class and define both the relationship and the
+	 * scopeByRelationship() method in your subclass. See the package readme for an example.
+	 *
+	 * @param $query
+	 * @param $relationshipIdentifier
+	 * @throws Exception
+	 */
+	public function scopeByRelationship($query, $relationshipIdentifier)
+	{
+		throw new Exception('Extend this class and override this method according to your app\'s requirements');
 	}
 
 	/**

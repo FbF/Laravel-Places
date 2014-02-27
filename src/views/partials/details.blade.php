@@ -1,4 +1,4 @@
-<div class="item{{ $post->is_sticky ? ' item__sticky' : '' }}">
+<div class="item{{ $place->is_sticky ? ' item__sticky' : '' }}">
 
 	<p class="item--all-link">
 		<a href="{{ action('Fbf\LaravelPlaces\PlacesController@index') }}">

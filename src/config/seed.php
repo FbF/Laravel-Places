@@ -109,7 +109,7 @@ return array(
 		/**
 		 * One in every X places has a map (use 0 for no maps)
 		 */
-		'freq' => 2,
+		'freq' => 1,
 
 		/**
 		 *

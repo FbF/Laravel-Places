@@ -20,7 +20,7 @@ class LaravelPlacesServiceProvider extends ServiceProvider {
 	{
 		$this->package('fbf/laravel-places');
 
-		if (\Config::get('laravel-places::use_built_in_routes', true))
+		if (\Config::get('laravel-places::routes.use_package_routes', true))
 		{
 			include __DIR__.'/../../routes.php';
 		}

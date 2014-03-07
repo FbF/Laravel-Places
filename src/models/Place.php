@@ -15,6 +15,15 @@ class Place extends \Eloquent {
 	protected $table = 'fbf_places';
 
 	/**
+	 * The prefix string for config options.
+	 *
+	 * Defaults to the package's config prefix string
+	 *
+	 * @var string
+	 */
+	protected $configPrefix = 'laravel-places::';
+
+	/**
 	 * Used for Cviebrock/EloquentSluggable
 	 * @var array
 	 */
@@ -93,7 +102,7 @@ class Place extends \Eloquent {
 		{
 			return null;
 		}
-		return self::getImageConfig($type, $size, 'dir') . $this->$type;
+		return $this->getImageConfig($type, $size, 'dir') . $this->$type;
 	}
 
 	/**
@@ -109,7 +118,7 @@ class Place extends \Eloquent {
 		{
 			return null;
 		}
-		$method = self::getImageConfig($type, $size, 'method');
+		$method = $this->getImageConfig($type, $size, 'method');
 
 		// Width varies for images that are 'portrait', 'auto', 'fit', 'crop'
 		if (in_array($method, array('portrait', 'auto', 'fit', 'crop')))
@@ -117,7 +126,7 @@ class Place extends \Eloquent {
 			list($width) = $this->getImageDimensions($type, $size);
 			return $width;
 		}
-		return self::getImageConfig($type, $size, 'width');
+		return $this->getImageConfig($type, $size, 'width');
 	}
 
 	/**
@@ -133,7 +142,7 @@ class Place extends \Eloquent {
 		{
 			return null;
 		}
-		$method = self::getImageConfig($type, $size, 'method');
+		$method = $this->getImageConfig($type, $size, 'method');
 
 		// Height varies for images that are 'landscape', 'auto', 'fit', 'crop'
 		if (in_array($method, array('landscape', 'auto', 'fit', 'crop')))
@@ -141,7 +150,7 @@ class Place extends \Eloquent {
 			list($width, $height) = $this->getImageDimensions($type, $size);
 			return $height;
 		}
-		return self::getImageConfig($type, $size, 'height');
+		return $this->getImageConfig($type, $size, 'height');
 	}
 
 	/**
@@ -153,7 +162,7 @@ class Place extends \Eloquent {
 	 */
 	protected function getImageDimensions($type, $size)
 	{
-		$pathToImage = public_path(self::getImageConfig($type, $size, 'dir') . $this->$type);
+		$pathToImage = public_path($this->getImageConfig($type, $size, 'dir') . $this->$type);
 		if (is_file($pathToImage) && file_exists($pathToImage))
 		{
 			list($width, $height) = getimagesize($pathToImage);
@@ -174,9 +183,9 @@ class Place extends \Eloquent {
 	 * @internal param $type
 	 * @return mixed
 	 */
-	public static function getImageConfig($imageType, $size, $property)
+	public function getImageConfig($imageType, $size, $property)
 	{
-		$config = 'laravel-places::images.' . $imageType . '.';
+		$config = $this->getConfigPrefix().'images.' . $imageType . '.';
 		if ($size == 'original')
 		{
 			$config .= 'original.';
@@ -189,28 +198,48 @@ class Place extends \Eloquent {
 		return \Config::get($config);
 	}
 
-	public function getYouTubeThumbnailImage()
+	/**
+	 * Helper function to determine whether the item has a YouTube video
+	 *
+	 * @return bool
+	 */
+	public function hasYouTubeVideo()
 	{
-		return str_replace('%YOU_TUBE_VIDEO_ID%', $this->you_tube_video_id, \Config::get('laravel-places::you_tube.thumbnail_code'));
+		return !empty($this->you_tube_video_id);
 	}
 
+	/**
+	 * Returns the thumbnail image code defined in the config, for the current item's you tube video id
+	 *
+	 * @return string
+	 */
+	public function getYouTubeThumbnailImage()
+	{
+		return str_replace('%YOU_TUBE_VIDEO_ID%', $this->you_tube_video_id, \Config::get($this->getConfigPrefix().'you_tube.thumbnail_code'));
+	}
+
+	/**
+	 * Returns the embed code defined in the config, for the current item's you tube video id
+	 *
+	 * @return string
+	 */
 	public function getYouTubeEmbedCode()
 	{
-		return str_replace('%YOU_TUBE_VIDEO_ID%', $this->you_tube_video_id, \Config::get('laravel-places::you_tube.embed_code'));
+		return str_replace('%YOU_TUBE_VIDEO_ID%', $this->you_tube_video_id, \Config::get($this->getConfigPrefix().'you_tube.embed_code'));
 	}
 
 	public function getMapZoom()
 	{
-		if (\Config::get('laravel-places::map.variable_map_zoom'))
+		if (\Config::get($this->getConfigPrefix().'map.variable_map_zoom'))
 		{
 			return $this->map_zoom;
 		}
-		return \Config::get('laravel-places::map.default_map_zoom');
+		return \Config::get($this->getConfigPrefix().'map.default_map_zoom');
 	}
 
 	public function getMapLatitude()
 	{
-		if (\Config::get('laravel-places::map.map_centre_different_to_marker'))
+		if (\Config::get($this->getConfigPrefix().'map.map_centre_different_to_marker'))
 		{
 			return $this->map_latitude;
 		}
@@ -219,7 +248,7 @@ class Place extends \Eloquent {
 
 	public function getMapLongitude()
 	{
-		if (\Config::get('laravel-places::map.map_centre_different_to_marker'))
+		if (\Config::get($this->getConfigPrefix().'map.map_centre_different_to_marker'))
 		{
 			return $this->map_longitude;
 		}
@@ -242,12 +271,42 @@ class Place extends \Eloquent {
 	}
 
 	/**
+	 * Help function to determine whether the item has a link
+	 * @return bool
+	 */
+	public function hasLink()
+	{
+		return !empty($this->link_text) && !empty($this->link_url);
+	}
+
+	/**
 	 * Returns the published date formatted according to the config setting
 	 * @return string
 	 */
 	public function getDate()
 	{
-		return date(\Config::get('laravel-places::views.published_date_format'), strtotime($this->published_date));
+		return date(\Config::get($this->getConfigPrefix().'views.published_date_format'), strtotime($this->published_date));
+	}
+
+	/**
+	 * Returns the config prefix
+	 *
+	 * @return string
+	 */
+	public function getConfigPrefix()
+	{
+		return $this->configPrefix;
+	}
+
+	/**
+	 * Sets the config prefix string
+	 *
+	 * @param $configBase string
+	 * @return string
+	 */
+	public function setConfigPrefix($configBase)
+	{
+		return $this->configPrefix = $configBase;
 	}
 
 }
